@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: gta5online-roadmap:latest
     container_name: gta5online-roadmap
     restart: unless-stopped
     ports:
@@ -15,3 +16,8 @@ services:
       start_period: 5s
     environment:
       - NODE_ENV=production
+    labels:
+      - "kuma.gta-roadmap.http.name=GTA 5 Online Roadmap"
+      - "kuma.gta-roadmap.http.url=http://172.17.0.1:3000"
+      - "kuma.gta-roadmap.docker.name=GTA 5 Online Roadmap (Container)"
+      - "kuma.gta-roadmap.docker.docker_container=gta5online-roadmap"

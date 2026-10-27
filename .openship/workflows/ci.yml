@@ -59,21 +59,35 @@ jobs:
           echo "Build integrity verified successfully."
 
   # -------------------------------------------------------------
-  # Job 3: Multi-Stage Docker Container Preflight
+  # Job 3: SRE Deployment via Docker Compose & AutoKuma
   # -------------------------------------------------------------
-  container-preflight:
-    name: Docker Container Preflight
+  deploy-compose:
+    name: Deploy via Docker Compose (with AutoKuma)
     needs: [build-spa]
     runs-on: [self-hosted, openship, linux]
-    if: ${{ !inputs.skip_container_build }}
     steps:
       - name: Checkout repository
         run: |
           echo "Cloning repository..."
           git clone --depth 1 -b dev-agy https://github.com/gabrielcruzg3/gta5online-roadmap.git .
 
-      - name: Validate multi-stage Docker build
+      - name: Deploy container with Compose & AutoKuma Labels
         run: |
-          echo "Building Docker container image for preflight..."
-          docker build --tag gta5online-roadmap:ci-test .
-          echo "Container build completed successfully."
+          echo "Validating Compose definition..."
+          docker compose -f compose.yaml config --quiet
+          echo "Starting service via Docker Compose..."
+          docker compose -f compose.yaml up -d --build --remove-orphans
+
+      - name: Verify Health & Port Readiness
+        run: |
+          echo "Waiting for service to be healthy on port 3000..."
+          for i in $(seq 1 15); do
+            if curl -fsS http://127.0.0.1:3000 > /dev/null 2>&1; then
+              echo "GTA 5 Online Roadmap is LIVE and healthy on http://127.0.0.1:3000"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "ERROR: Service did not respond on port 3000 within 30s"
+          docker compose -f compose.yaml logs --tail 30
+          exit 1
