@@ -1,15 +1,7 @@
 name: OpenShip CI Pipeline
 
-# Trigger on push, pull request, and manual dispatch
+# Trigger via manual dispatch (OpenShip Actions runner)
 on:
-  push:
-    branches:
-      - main
-      - dev-agy
-  pull_request:
-    branches:
-      - main
-      - dev-agy
   workflow_dispatch:
     inputs:
       skip_container_build:
@@ -30,13 +22,9 @@ jobs:
     runs-on: [self-hosted, openship, linux]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
+        run: |
+          echo "Cloning repository..."
+          git clone --depth 1 -b dev-agy https://github.com/gabrielcruzg3/gta5online-roadmap.git .
 
       - name: Install dependencies (clean install)
         run: npm ci
@@ -53,13 +41,9 @@ jobs:
     runs-on: [self-hosted, openship, linux]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
+        run: |
+          echo "Cloning repository..."
+          git clone --depth 1 -b dev-agy https://github.com/gabrielcruzg3/gta5online-roadmap.git .
 
       - name: Install dependencies
         run: npm ci
@@ -84,7 +68,9 @@ jobs:
     if: ${{ !inputs.skip_container_build }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        run: |
+          echo "Cloning repository..."
+          git clone --depth 1 -b dev-agy https://github.com/gabrielcruzg3/gta5online-roadmap.git .
 
       - name: Validate multi-stage Docker build
         run: |

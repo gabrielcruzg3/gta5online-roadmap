@@ -1,16 +1,9 @@
 {
   "$schema": "https://openship.io/openship.schema.json",
-  "framework": "vite",
-  "packageManager": "npm",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "routes": {
-    "cleanUrls": true,
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
-      }
-    ]
-  }
+  "framework": "docker",
+  "workload": "web",
+  "productionMode": "standalone",
+  "runtime": "docker",
+  "startCommand": "nginx -g 'daemon off;'",
+  "port": 80
 }
