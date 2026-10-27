@@ -29,6 +29,15 @@ docker compose up -d --build
 docker compose -f compose.dev.yaml up
 ```
 
+### OpenShip & CI Workflows
+```bash
+# Validate OpenShip deploy configuration
+openship config validate
+
+# Preview OpenShip CI workflow parsing
+openship api -X POST /actions/preview -d '{"path": ".openship/workflows/ci.yml", "controller": "openship"}'
+```
+
 ---
 
 ## 2. Architecture & Directory Map

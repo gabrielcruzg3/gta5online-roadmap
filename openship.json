@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openship.io/openship.schema.json",
+  "framework": "vite",
+  "packageManager": "npm",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "routes": {
+    "cleanUrls": true,
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

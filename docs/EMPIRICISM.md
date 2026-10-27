@@ -16,3 +16,9 @@
 * **Date**: 2026-10-24
 * **Observation**: Client-side single page applications built with Vite fail with 404 Not Found on container refresh when accessing nested routes unless fallback rules exist.
 * **Resolution**: Added `try_files $uri $uri/ /index.html;` in `nginx.conf` and configured long-lived asset caching headers (`expires 1y; add_header Cache-Control "public, no-transform";`) for all JS, CSS, and SVG chunks.
+
+### Problem / Finding 4: OpenShip CI Workflow Engine & Routing Schema
+* **Date**: 2026-10-26
+* **Observation**: Configuring OpenShip CI workflows requires adhering to GitHub Actions-compatible YAML schemas. Placing files under `.openship/workflows/` targets OpenShip's internal runner engine (powered by `act`) without triggering external GitHub Actions runs, while `.github/workflows/` triggers GitHub-coordinated runners.
+* **Root Cause**: OpenShip integrates `@actions/workflow-parser` and `act` to provide 100% GitHub-compatible workflow definitions with scoped runner labels (`[self-hosted, openship, linux]`). Furthermore, `openship.json` defines reverse-proxy rewrite rules (`routes.rewrites`) requiring `{ source: "/(.*)", destination: "/index.html" }` for SPA routing.
+* **Resolution**: Created `.openship/workflows/ci.yml` (multi-job pipeline with TypeScript typechecking, Vite SPA build verification, and container preflight) and dual-compatible `.github/workflows/ci.yml`. Validated the workflow syntax against `/api/actions/preview` and validated `openship.json` with `openship config validate`.
